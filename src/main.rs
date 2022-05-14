@@ -12,8 +12,12 @@ fn main() {
 		})
 		.add_plugins(DefaultPlugins)
 		.add_startup_system(setup)
+		.add_system(update_text)
 		.run();
 }
+
+#[derive(Component)]
+struct Dot32;
 
 fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 	commands.spawn_bundle(UiCameraBundle::default());
@@ -56,11 +60,17 @@ fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 				// Default::default(),
 			),
 			..Default::default()
-		});
+		}).insert(Dot32);
 	});
 }
 
 fn ease_out_elastic(x: f32) -> f32 {
 	let c4 = (2.0*std::f64::consts::PI as f32) / 2.3; // edit "2.3" for effect
 	(-18.0*x).powf(2.0)*((x*10.0 - 0.75)*c4).sin() + 1.0 // edit "-18" for efefct
+}
+
+fn update_text(mut dot32: Query<&mut Style, With<Dot32>>) {
+	for mut style in dot32.iter_mut() {
+		style.position.bottom = Val::Px(-100.0)
+	}
 }
