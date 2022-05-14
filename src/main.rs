@@ -59,3 +59,8 @@ fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 		});
 	});
 }
+
+fn ease_out_elastic(x: f32) -> f32 {
+	let c4 = (2.0*std::f64::consts::PI as f32) / 2.3; // edit "2.3" for effect
+	(-18.0*x).powf(2.0)*((x*10.0 - 0.75)*c4).sin() + 1.0 // edit "-18" for efefct
+}
