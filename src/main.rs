@@ -1,5 +1,9 @@
+use std::env;
 use bevy::prelude::*;
 use bevy::window::*;
+use bevy::app::AppExit;
+
+const RESTARTABLE: bool = true;
 
 fn main() {
 	App::new()
@@ -15,6 +19,7 @@ fn main() {
 		.add_startup_system(setup)
 		.add_system(update_dot32_text)
 		.add_system(update_games_text)
+		.add_system(keys)
 		.run();
 }
 
@@ -133,6 +138,53 @@ fn update_games_text(
 	let window = windows.get_primary().unwrap();
 
 	for mut style in games.iter_mut() {
-		style.position.right = Val::Px(ease_out_elastic(progress.time)*window.width()/2.0-window.width()/2.0)
+		style.position.left = Val::Px(ease_out_elastic(progress.time)*window.width()/2.0-window.width()/2.0)
+	}
+}
+
+fn keys(
+	keyboard_input: Res<Input<KeyCode>>,
+	mut progress: ResMut<Progress>, 
+	mut exit: EventWriter<AppExit>,
+	mut windows: ResMut<Windows>,
+) {
+	let window = windows.get_primary_mut().unwrap();
+
+	if env::consts::OS == "macos" {
+		if keyboard_input.pressed(KeyCode::LWin) && keyboard_input.just_pressed(KeyCode::W) {
+				exit.send(AppExit);
+				window.set_mode(WindowMode::Windowed);
+		}
+		if keyboard_input.pressed(KeyCode::LWin) 
+		&& keyboard_input.pressed(KeyCode::LControl) 
+		&& keyboard_input.just_pressed(KeyCode::F) {
+			println!("{:?}", window.mode());
+			if window.mode() == WindowMode::Windowed {
+				window.set_mode(WindowMode::BorderlessFullscreen);
+			} else if window.mode() == WindowMode::BorderlessFullscreen {
+				window.set_mode(WindowMode::Windowed);
+			}
+		}
+
+		if RESTARTABLE {
+			if keyboard_input.pressed(KeyCode::LWin) && keyboard_input.just_pressed(KeyCode::R) {
+				progress.time = 0.0
+			}
+		}
+	}
+	if env::consts::OS == "windows" {
+		if keyboard_input.just_pressed(KeyCode::F11) {
+			if window.mode() == WindowMode::Windowed {
+				window.set_mode(WindowMode::BorderlessFullscreen);
+			} else if window.mode() == WindowMode::BorderlessFullscreen {
+				window.set_mode(WindowMode::Windowed);
+			}
+		}
+
+		if RESTARTABLE {
+			if keyboard_input.pressed(KeyCode::LControl) && keyboard_input.just_pressed(KeyCode::R) {
+				progress.time = 0.0
+			}
+		}
 	}
 }
