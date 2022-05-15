@@ -5,7 +5,7 @@ use bevy::app::AppExit;
 
 const RESTARTABLE: bool = true;
 const SUBTEXT: &str = "Games";
-const LENGTH: f32 = 0.5;
+const LENGTH: f32 = 1.0;
 const FADE: f32 = 0.2;
 
 fn main() {
@@ -19,6 +19,7 @@ fn main() {
 		})
 		.add_plugins(DefaultPlugins)
 		.insert_resource(Progress { time: -0.2 })
+		.insert_resource(ClearColor(Color::rgb(0.7, 0.55, 0.41)))
 		.add_startup_system(setup)
 		.add_system(update_time)
 		.add_system(update_background)
@@ -129,7 +130,7 @@ fn update_time(time: Res<Time>, mut progress: ResMut<Progress>, ) {
 
 fn update_background(progress: Res<Progress>, mut background: Query<&mut UiColor, With<Background>>) {
 	for mut color in background.iter_mut() {
-		*color = Color::rgba(0.17, 0.17, 0.17, 1.0).into()
+		*color = Color::rgba(0.17, 0.17, 0.17, ((-progress.time+LENGTH)/FADE).max(0.0).min(1.0)).into()
 	}
 }
 
