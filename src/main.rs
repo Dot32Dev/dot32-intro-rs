@@ -18,6 +18,7 @@ fn main() {
 		.add_plugins(DefaultPlugins)
 		.insert_resource(Progress { time: -0.2 })
 		.add_startup_system(setup)
+		.add_system(update_time)
 		.add_system(update_dot32_text)
 		.add_system(update_subtext_text)
 		.add_system(keys)
@@ -116,14 +117,15 @@ fn ease_out_elastic(x: f32) -> f32 {
 	2.0_f32.powf(-18.0*x.max(0.0)) * ((x.max(0.0)*10.0 - 0.75)*c4).sin() + 1.0 // edit "-18" for efefct
 }
 
+fn update_time(time: Res<Time>, mut progress: ResMut<Progress>, ) {
+	progress.time += time.delta_seconds();
+}
+
 fn update_dot32_text(
-	time: Res<Time>, 
 	windows: Res<Windows>, 
-	mut progress: ResMut<Progress>, 
+	progress: ResMut<Progress>, 
 	mut dot32: Query<&mut Style, With<Dot32>>,
 ) {
-	progress.time += time.delta_seconds();
-	
 	let window = windows.get_primary().unwrap();
 
 	for mut style in dot32.iter_mut() {
