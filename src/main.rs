@@ -11,9 +11,14 @@ fn main() {
 			..Default::default()
 		})
 		.add_plugins(DefaultPlugins)
+		.insert_resource(Progress { time: 0.0 })
 		.add_startup_system(setup)
 		.add_system(update_text)
 		.run();
+}
+
+struct Progress{ 
+	time: f32
 }
 
 #[derive(Component)]
@@ -66,11 +71,20 @@ fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 
 fn ease_out_elastic(x: f32) -> f32 {
 	let c4 = (2.0*std::f64::consts::PI as f32) / 2.3; // edit "2.3" for effect
-	(-18.0*x).powf(2.0)*((x*10.0 - 0.75)*c4).sin() + 1.0 // edit "-18" for efefct
+	2.0_f32.powf(-18.0*x) * ((x*10.0 - 0.75)*c4).sin() + 1.0 // edit "-18" for efefct
 }
 
-fn update_text(mut dot32: Query<&mut Style, With<Dot32>>) {
+fn update_text(
+	time: Res<Time>, 
+	windows: Res<Windows>, 
+	mut progress: ResMut<Progress>, 
+	mut dot32: Query<&mut Style, With<Dot32>>,
+) {
+	progress.time += time.delta_seconds();
+	
+	let window = windows.get_primary().unwrap();
+
 	for mut style in dot32.iter_mut() {
-		style.position.bottom = Val::Px(-100.0)
+		style.position.top = Val::Px(ease_out_elastic(progress.time)*window.height()/2.0-window.height()/2.0)
 	}
 }
