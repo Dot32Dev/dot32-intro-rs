@@ -5,6 +5,8 @@ use bevy::app::AppExit;
 
 const RESTARTABLE: bool = true;
 const SUBTEXT: &str = "Games";
+const LENGTH: f32 = 0.5;
+const FADE: f32 = 0.2;
 
 fn main() {
 	App::new()
@@ -19,6 +21,7 @@ fn main() {
 		.insert_resource(Progress { time: -0.2 })
 		.add_startup_system(setup)
 		.add_system(update_time)
+		.add_system(update_background)
 		.add_system(update_dot32_text)
 		.add_system(update_subtext_text)
 		.add_system(keys)
@@ -35,6 +38,9 @@ struct Dot32;
 #[derive(Component)]
 struct Subtext;
 
+#[derive(Component)]
+struct Background;
+
 fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 	commands.spawn_bundle(UiCameraBundle::default());
 	commands.spawn_bundle(NodeBundle {
@@ -45,9 +51,9 @@ fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 			flex_direction: FlexDirection::ColumnReverse,
 			..default()
 		},
-		color: Color::rgb(0.17, 0.17, 0.17).into(),
+		color: Color::rgba(0.17, 0.17, 0.17, 1.0).into(),
 		..default()
-	}).with_children(|parent| {
+	}).insert(Background).with_children(|parent| {
 		parent.spawn_bundle(TextBundle {
 			style: Style {
 					align_self: AlignSelf::Center,
@@ -119,6 +125,12 @@ fn ease_out_elastic(x: f32) -> f32 {
 
 fn update_time(time: Res<Time>, mut progress: ResMut<Progress>, ) {
 	progress.time += time.delta_seconds();
+}
+
+fn update_background(progress: Res<Progress>, mut background: Query<&mut UiColor, With<Background>>) {
+	for mut color in background.iter_mut() {
+		*color = Color::rgba(0.17, 0.17, 0.17, 1.0).into()
+	}
 }
 
 fn update_dot32_text(
