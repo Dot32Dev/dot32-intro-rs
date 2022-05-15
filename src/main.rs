@@ -4,6 +4,7 @@ use bevy::window::*;
 use bevy::app::AppExit;
 
 const RESTARTABLE: bool = true;
+const SUBTEXT: &str = "Games";
 
 fn main() {
 	App::new()
@@ -18,7 +19,7 @@ fn main() {
 		.insert_resource(Progress { time: -0.2 })
 		.add_startup_system(setup)
 		.add_system(update_dot32_text)
-		.add_system(update_games_text)
+		.add_system(update_subtext_text)
 		.add_system(keys)
 		.run();
 }
@@ -31,7 +32,7 @@ struct Progress{
 struct Dot32;
 
 #[derive(Component)]
-struct Games;
+struct Subtext;
 
 fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 	commands.spawn_bundle(UiCameraBundle::default());
@@ -92,7 +93,7 @@ fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 			// Use the `Text::with_section` constructor
 			text: Text::with_section(
 				// Accepts a `String` or any type that converts into a `String`, such as `&str`
-				"Games",
+				SUBTEXT,
 				TextStyle {
 					font: asset_server.load("fonts/PT_Sans/PTSans-Regular.ttf"),
 					font_size: 50.0,
@@ -106,7 +107,7 @@ fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 				// Default::default(),
 			),
 			..Default::default()
-		}).insert(Games);
+		}).insert(Subtext);
 	});
 }
 
@@ -130,14 +131,14 @@ fn update_dot32_text(
 	}
 }
 
-fn update_games_text(
+fn update_subtext_text(
 	windows: Res<Windows>, 
-	mut progress: ResMut<Progress>, 
-	mut games: Query<&mut Style, With<Games>>,
+	progress: Res<Progress>, 
+	mut subtext: Query<&mut Style, With<Subtext>>,
 ) {
 	let window = windows.get_primary().unwrap();
 
-	for mut style in games.iter_mut() {
+	for mut style in subtext.iter_mut() {
 		style.position.left = Val::Px(ease_out_elastic(progress.time)*window.width()/2.0-window.width()/2.0)
 	}
 }
