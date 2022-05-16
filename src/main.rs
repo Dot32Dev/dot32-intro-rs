@@ -138,11 +138,16 @@ fn update_dot32_text(
 	windows: Res<Windows>, 
 	progress: ResMut<Progress>, 
 	mut dot32: Query<&mut Style, With<Dot32>>,
+	mut color: Query<&mut Text, With<Dot32>>,
 ) {
 	let window = windows.get_primary().unwrap();
 
 	for mut style in dot32.iter_mut() {
 		style.position.top = Val::Px(ease_out_elastic(progress.time)*window.height()/2.0-window.height()/2.0)
+	}
+
+	for mut value in color.iter_mut() {
+		value.sections[0].style.color = Color::rgba(1.0, 1.0, 1.0, ((-progress.time+LENGTH)/FADE).max(0.0).min(1.0))
 	}
 }
 
@@ -150,11 +155,16 @@ fn update_subtext_text(
 	windows: Res<Windows>, 
 	progress: Res<Progress>, 
 	mut subtext: Query<&mut Style, With<Subtext>>,
+	mut color: Query<&mut Text, With<Subtext>>,
 ) {
 	let window = windows.get_primary().unwrap();
 
 	for mut style in subtext.iter_mut() {
 		style.position.left = Val::Px(ease_out_elastic(progress.time)*window.width()/2.0-window.width()/2.0)
+	}
+
+	for mut value in color.iter_mut() {
+		value.sections[0].style.color = Color::rgba(1.0, 1.0, 1.0, ((-progress.time+LENGTH)/FADE).max(0.0).min(1.0))
 	}
 }
 
