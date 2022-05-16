@@ -18,15 +18,24 @@ fn main() {
 			..Default::default()
 		})
 		.add_plugins(DefaultPlugins)
-		.insert_resource(Progress { time: -0.2 })
 		.insert_resource(ClearColor(Color::rgb(0.7, 0.55, 0.41)))
-		.add_startup_system(setup)
-		.add_system(update_time)
-		.add_system(update_background)
-		.add_system(update_dot32_text)
-		.add_system(update_subtext_text)
-		.add_system(keys)
+		.add_plugin(Intro)
 		.run();
+}
+
+pub struct Intro;
+
+impl Plugin for Intro {
+	fn build(&self, app: &mut App) {
+			app.insert_resource(Progress { time: -0.2 })
+				.add_startup_system(setup)
+				.add_system(update_time)
+				.add_system(update_background)
+				.add_system(update_dot32_text)
+				.add_system(update_subtext_text)
+				.add_system(keys)
+				.run();
+	}
 }
 
 struct Progress{ 
