@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use bevy::window::*;
 use bevy::app::AppExit;
 
-const RESTARTABLE: bool = true;
+const RESTARTABLE: bool = false;
 const SUBTEXT: &str = "Games";
 const LENGTH: f32 = 1.0;
 const FADE: f32 = 0.2;
