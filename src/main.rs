@@ -17,8 +17,8 @@ fn main() {
 			present_mode: PresentMode::Fifo, // Vesync enabled, replace Fifo with Mailbox for no vsync
 			..Default::default()
 		})
-		.add_plugins(DefaultPlugins)
 		.insert_resource(ClearColor(Color::rgb(0.7, 0.55, 0.41)))
+		.add_plugins(DefaultPlugins)
 		.add_plugin(Intro)
 		.run();
 }
