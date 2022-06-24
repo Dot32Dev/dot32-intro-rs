@@ -5,8 +5,8 @@ use bevy::app::AppExit;
 
 const RESTARTABLE: bool = false;
 const SUBTEXT: &str = "Games";
-const LENGTH: f32 = 1.0;
-const FADE: f32 = 0.2;
+pub const LENGTH: f32 = 1.0;
+pub const FADE: f32 = 0.2;
 
 pub struct Intro;
 
