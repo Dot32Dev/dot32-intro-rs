@@ -18,6 +18,7 @@ impl Plugin for Intro {
 				.add_system(update_background)
 				.add_system(update_dot32_text)
 				.add_system(update_subtext_text)
+				.add_system(delete_when_finished)
 				.add_system(keys)
 				.run();
 	}
@@ -205,6 +206,18 @@ fn keys(
 			if keyboard_input.pressed(KeyCode::LControl) && keyboard_input.just_pressed(KeyCode::R) {
 				progress.time = 0.0
 			}
+		}
+	}
+}
+
+fn delete_when_finished(
+	progress: Res<Progress>, 
+	intro: Query<Entity, With<Background>>,
+	mut commands: Commands,
+) {
+	for intro_entity in intro.iter() {
+		if progress.time > LENGTH + FADE {
+			commands.entity(intro_entity).despawn_recursive(); 
 		}
 	}
 }
