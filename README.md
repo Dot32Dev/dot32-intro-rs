@@ -21,7 +21,7 @@ Lastly, add a folder called fonts to your assets folder, with PT_Sans inside if 
 
 I've no idea why you might want to use my intro library but maybe this could be useful for anyone wishing to make their own intro library 🗿
 
-|Bevy version|dot32_intro verion|dot32_intro git rev
+|Bevy version|dot32_intro version|dot32_intro git rev
 |---|---|---|
 |0.8|0.2|`739b892`
 |0.7|0.1|`10d737d`
