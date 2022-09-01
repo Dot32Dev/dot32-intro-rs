@@ -49,7 +49,10 @@ fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 		},
 		color: Color::rgba(0.17, 0.17, 0.17, 1.0).into(),
 		..default()
-	}).insert(Background).with_children(|parent| {
+	})
+	.insert(Background)
+	.insert(Name::new("Intro"))
+	.with_children(|parent| {
 		parent.spawn_bundle(
 			TextBundle::from_section(
 				"Dot32",
@@ -71,7 +74,7 @@ fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 				},
 				..default()
 			})
-		).insert(Dot32);
+		).insert(Name::new("Dot32")).insert(Dot32);
 	}).with_children(|parent| {
 		parent.spawn_bundle(
 			TextBundle::from_section(
@@ -94,7 +97,7 @@ fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 				},
 				..default()
 			})
-		).insert(Subtext);
+		).insert(Name::new("Subtext")).insert(Subtext);
 	});
 }
 
