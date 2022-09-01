@@ -11,8 +11,10 @@ Press `ctrl`+`r` on windows or `cmd`+`r` on mac to replay the animation. (This i
 Installation of the intro is as simple as 
 ```toml
 [Dependancies]
-dot32_intro = { git = "https://github.com/Dot32IsCool/dot32-intro-rs"}
+dot32_intro = { git = "https://github.com/Dot32IsCool/dot32-intro-rs", rev = "739b892"}
 ```
+Make sure to include the git rev of the version you're using, see version table below.
+
 Add `use dot32_intro::*;` to the top of your file and add the `Intro` plugin to your bevy app. The order in which plugins/systems are added appears to matter, so play around with that. <br>
 
 Lastly, add a folder called fonts to your assets folder, with PT_Sans inside if you want the text to show (which you should, what's the point otherwise)
