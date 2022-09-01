@@ -38,7 +38,7 @@ struct Subtext;
 struct Background;
 
 fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
-	commands.spawn_bundle(UiCameraBundle::default());
+	commands.spawn_bundle(Camera2dBundle::default());
 	commands.spawn_bundle(NodeBundle {
 		style: Style {
 			size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
@@ -50,67 +50,51 @@ fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 		color: Color::rgba(0.17, 0.17, 0.17, 1.0).into(),
 		..default()
 	}).insert(Background).with_children(|parent| {
-		parent.spawn_bundle(TextBundle {
-			style: Style {
-					align_self: AlignSelf::Center,
-					position: Rect {
-							bottom: Val::Px(0.0),
-							// bottom: Val::Percent(0.5),
-							// right: Val::Percent(50.0),
-							// left: Val::Percent(50.0),
-							..Default::default()
-					},
-					..Default::default()
-			},
-			// Use the `Text::with_section` constructor
-			text: Text::with_section(
-				// Accepts a `String` or any type that converts into a `String`, such as `&str`
+		parent.spawn_bundle(
+			TextBundle::from_section(
 				"Dot32",
 				TextStyle {
 					font: asset_server.load("fonts/PT_Sans/PTSans-Bold.ttf"),
 					font_size: 140.0,
 					color: Color::WHITE,
 				},
-				// Note: You can use `Default::default()` in place of the `TextAlignment`
-				TextAlignment {
-					horizontal: HorizontalAlign::Center,
-					vertical: VerticalAlign::Center,
+			)
+			.with_text_alignment(TextAlignment {
+				horizontal: HorizontalAlign::Center,
+				vertical: VerticalAlign::Center,
+			})
+			.with_style(Style {
+				align_self: AlignSelf::Center,
+				position: UiRect {
+					bottom: Val::Px(0.0),
+					..default()
 				},
-				// Default::default(),
-			),
-			..Default::default()
-		}).insert(Dot32);
+				..default()
+			})
+		).insert(Dot32);
 	}).with_children(|parent| {
-		parent.spawn_bundle(TextBundle {
-			style: Style {
-					align_self: AlignSelf::Center,
-					position: Rect {
-							bottom: Val::Px(20.0),
-							// bottom: Val::Percent(0.5),
-							// right: Val::Percent(50.0),
-							// left: Val::Percent(50.0),
-							..Default::default()
-					},
-					..Default::default()
-			},
-			// Use the `Text::with_section` constructor
-			text: Text::with_section(
-				// Accepts a `String` or any type that converts into a `String`, such as `&str`
+		parent.spawn_bundle(
+			TextBundle::from_section(
 				SUBTEXT,
 				TextStyle {
 					font: asset_server.load("fonts/PT_Sans/PTSans-Regular.ttf"),
 					font_size: 50.0,
 					color: Color::WHITE,
 				},
-				// Note: You can use `Default::default()` in place of the `TextAlignment`
-				TextAlignment {
-					horizontal: HorizontalAlign::Center,
-					vertical: VerticalAlign::Center,
+			)
+			.with_text_alignment(TextAlignment {
+				horizontal: HorizontalAlign::Center,
+				vertical: VerticalAlign::Center,
+			})
+			.with_style(Style {
+				align_self: AlignSelf::Center,
+				position: UiRect {
+					bottom: Val::Px(20.0),
+					..default()
 				},
-				// Default::default(),
-			),
-			..Default::default()
-		}).insert(Subtext);
+				..default()
+			})
+		).insert(Subtext);
 	});
 }
 
