@@ -30,7 +30,7 @@ struct Progress{
 }
 
 pub struct Completed{ 
-	value: bool
+	pub value: bool
 }
 
 #[derive(Component)]
