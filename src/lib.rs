@@ -13,6 +13,7 @@ pub struct Intro;
 impl Plugin for Intro {
 	fn build(&self, app: &mut App) {
 			app.insert_resource(Progress { time: -0.2 })
+				.insert_resource(Completed { value: false })
 				.add_startup_system(setup)
 				.add_system(update_time)
 				.add_system(update_background)
@@ -26,6 +27,10 @@ impl Plugin for Intro {
 
 struct Progress{ 
 	time: f32
+}
+
+pub struct Completed{ 
+	value: bool
 }
 
 #[derive(Component)]
@@ -199,12 +204,14 @@ fn keys(
 
 fn delete_when_finished(
 	progress: Res<Progress>, 
+	mut completed: ResMut<Completed>, 
 	intro: Query<Entity, With<Background>>,
 	mut commands: Commands,
 ) {
 	for intro_entity in intro.iter() {
 		if progress.time > LENGTH + FADE {
 			commands.entity(intro_entity).despawn_recursive(); 
+			completed.value = true;
 		}
 	}
 }
