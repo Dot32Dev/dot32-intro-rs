@@ -49,7 +49,7 @@ fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 	commands.spawn(Camera2dBundle {
 		camera: Camera {
 			// renders after / on top of the main camera
-			priority: 1,
+			priority: -1,
 			..default()
 		},
 		..default()
