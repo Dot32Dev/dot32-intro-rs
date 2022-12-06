@@ -11,7 +11,7 @@ Press `ctrl`+`r` on windows or `cmd`+`r` on mac to replay the animation. (This i
 Installation of the intro is as simple as 
 ```toml
 [dependencies]
-dot32_intro = { git = "https://github.com/Dot32IsCool/dot32-intro-rs", rev = "02551fc"}
+dot32_intro = { git = "https://github.com/Dot32IsCool/dot32-intro-rs", rev = "49de846"}
 ```
 Make sure to include the git rev of the version you're using, see version table below.
 
@@ -21,8 +21,9 @@ Lastly, add a folder called fonts to your assets folder, with PT_Sans inside if 
 
 I've no idea why you might want to use my intro library but maybe this could be useful for anyone wishing to make their own intro library 🗿
 
-|Bevy version|dot32_intro version|dot32_intro git rev
+|Bevy version|dot32_intro version|dot32_intro git rev 
 |---|---|---|
+|0.9|0.4|`49de846`
 |0.8|0.3.1|`02551fc`
 |0.8|0.2|`2e10211`
 |0.7|0.1|`10d737d`
