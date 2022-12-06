@@ -45,7 +45,15 @@ struct Subtext;
 struct Background;
 
 fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
-	commands.spawn(Camera2dBundle::default());
+	// commands.spawn(Camera2dBundle::default());
+	commands.spawn(Camera2dBundle {
+		camera: Camera {
+			// renders after / on top of the main camera
+			priority: 1,
+			..default()
+		},
+		..default()
+	});
 	commands.spawn(NodeBundle {
 		style: Style {
 			size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
