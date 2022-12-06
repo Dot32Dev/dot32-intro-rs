@@ -1,6 +1,6 @@
 use std::env;
 use bevy::prelude::*;
-use bevy::window::*;
+// use bevy::window::*;
 use bevy::app::AppExit;
 
 const RESTARTABLE: bool = false;
@@ -25,10 +25,12 @@ impl Plugin for Intro {
 	}
 }
 
+#[derive(Resource)]
 struct Progress{ 
 	time: f32
 }
 
+#[derive(Resource)]
 pub struct Completed{ 
 	pub value: bool
 }
@@ -43,8 +45,8 @@ struct Subtext;
 struct Background;
 
 fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
-	commands.spawn_bundle(Camera2dBundle::default());
-	commands.spawn_bundle(NodeBundle {
+	commands.spawn(Camera2dBundle::default());
+	commands.spawn(NodeBundle {
 		style: Style {
 			size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
 			position_type: PositionType::Absolute,
@@ -52,36 +54,13 @@ fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 			flex_direction: FlexDirection::ColumnReverse,
 			..default()
 		},
-		color: Color::rgba(0.17, 0.17, 0.17, 1.0).into(),
+		background_color: Color::rgba(0.17, 0.17, 0.17, 1.0).into(),
 		..default()
 	})
 	.insert(Background)
 	.insert(Name::new("Intro"))
 	.with_children(|parent| {
-		parent.spawn_bundle(
-			TextBundle::from_section(
-				"Dot32",
-				TextStyle {
-					font: asset_server.load("fonts/PT_Sans/PTSans-Bold.ttf"),
-					font_size: 140.0,
-					color: Color::WHITE,
-				},
-			)
-			.with_text_alignment(TextAlignment {
-				horizontal: HorizontalAlign::Center,
-				vertical: VerticalAlign::Center,
-			})
-			.with_style(Style {
-				align_self: AlignSelf::Center,
-				position: UiRect {
-					bottom: Val::Px(0.0),
-					..default()
-				},
-				..default()
-			})
-		).insert(Name::new("Dot32")).insert(Dot32);
-	}).with_children(|parent| {
-		parent.spawn_bundle(
+		parent.spawn(
 			TextBundle::from_section(
 				SUBTEXT,
 				TextStyle {
@@ -103,6 +82,29 @@ fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 				..default()
 			})
 		).insert(Name::new("Subtext")).insert(Subtext);
+
+		parent.spawn(
+			TextBundle::from_section(
+				"Dot32",
+				TextStyle {
+					font: asset_server.load("fonts/PT_Sans/PTSans-Bold.ttf"),
+					font_size: 140.0,
+					color: Color::WHITE,
+				},
+			)
+			.with_text_alignment(TextAlignment {
+				horizontal: HorizontalAlign::Center,
+				vertical: VerticalAlign::Center,
+			})
+			.with_style(Style {
+				align_self: AlignSelf::Center,
+				position: UiRect {
+					bottom: Val::Px(0.0),
+					..default()
+				},
+				..default()
+			})
+		).insert(Name::new("Dot32")).insert(Dot32);
 	});
 }
 
@@ -115,7 +117,7 @@ fn update_time(time: Res<Time>, mut progress: ResMut<Progress>, ) {
 	progress.time += time.delta_seconds();
 }
 
-fn update_background(progress: Res<Progress>, mut background: Query<&mut UiColor, With<Background>>) {
+fn update_background(progress: Res<Progress>, mut background: Query<&mut BackgroundColor, With<Background>>) {
 	for mut color in background.iter_mut() {
 		*color = Color::rgba(0.17, 0.17, 0.17, ((-progress.time+LENGTH)/FADE).max(0.0).min(1.0)).into()
 	}
