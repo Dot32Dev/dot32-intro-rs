@@ -11,7 +11,7 @@ Press `ctrl`+`r` on windows or `cmd`+`r` on mac to replay the animation. (This i
 Installation of the intro is as simple as 
 ```toml
 [dependencies]
-dot32_intro = { git = "https://github.com/Dot32IsCool/dot32-intro-rs", rev = "49de846"}
+dot32_intro = { git = "https://github.com/Dot32IsCool/dot32-intro-rs", rev = "a704742"}
 ```
 Make sure to include the git rev of the version you're using, see version table below.
 
@@ -23,6 +23,7 @@ I've no idea why you might want to use my intro library but maybe this could be 
 
 |Bevy version|dot32_intro version|dot32_intro git rev 
 |---|---|---|
+|0.10|0.5|`a704742`
 |0.9|0.4|`49de846`
 |0.8|0.3.1|`02551fc`
 |0.8|0.2|`2e10211`
