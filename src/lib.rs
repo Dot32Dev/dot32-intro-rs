@@ -1,6 +1,6 @@
 use std::env;
 use bevy::prelude::*;
-// use bevy::window::*;
+use bevy::window::*;
 use bevy::app::AppExit;
 
 const RESTARTABLE: bool = false;
@@ -19,9 +19,9 @@ impl Plugin for Intro {
 				.add_system(update_background)
 				.add_system(update_dot32_text)
 				.add_system(update_subtext_text)
-				.add_system(delete_when_finished)
-				.add_system(keys)
-				.run();
+				.add_system(delete_when_finished);
+				// .add_system(keys)
+				// .run();
 	}
 }
 
@@ -49,7 +49,7 @@ fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 	commands.spawn(Camera2dBundle {
 		camera: Camera {
 			// renders after / on top of the main camera
-			priority: -1,
+			order: -1,
 			..default()
 		},
 		..default()
@@ -77,10 +77,10 @@ fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 					color: Color::WHITE,
 				},
 			)
-			.with_text_alignment(TextAlignment {
-				horizontal: HorizontalAlign::Center,
-				vertical: VerticalAlign::Center,
-			})
+			// .with_text_alignment(TextAlignment {
+			// 	horizontal: HorizontalAlign::Center,
+			// 	vertical: VerticalAlign::Center,
+			// })
 			.with_style(Style {
 				align_self: AlignSelf::Center,
 				position: UiRect {
@@ -100,10 +100,10 @@ fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 					color: Color::WHITE,
 				},
 			)
-			.with_text_alignment(TextAlignment {
-				horizontal: HorizontalAlign::Center,
-				vertical: VerticalAlign::Center,
-			})
+			// .with_text_alignment(TextAlignment {
+			// 	horizontal: HorizontalAlign::Center,
+			// 	vertical: VerticalAlign::Center,
+			// })
 			.with_style(Style {
 				align_self: AlignSelf::Center,
 				position: UiRect {
@@ -132,12 +132,15 @@ fn update_background(progress: Res<Progress>, mut background: Query<&mut Backgro
 }
 
 fn update_dot32_text(
-	windows: Res<Windows>, 
+	primary_window: Query<&Window, With<PrimaryWindow>>, 
 	progress: ResMut<Progress>, 
 	mut dot32: Query<&mut Style, With<Dot32>>,
 	mut color: Query<&mut Text, With<Dot32>>,
 ) {
-	let window = windows.get_primary().unwrap();
+	let Ok(window) = primary_window.get_single() else {
+        return;
+
+    };
 
 	for mut style in dot32.iter_mut() {
 		style.position.top = Val::Px(ease_out_elastic(progress.time)*window.height()/2.0-window.height()/2.0)
@@ -149,12 +152,15 @@ fn update_dot32_text(
 }
 
 fn update_subtext_text(
-	windows: Res<Windows>, 
+	primary_window: Query<&Window, With<PrimaryWindow>>, 
 	progress: Res<Progress>, 
 	mut subtext: Query<&mut Style, With<Subtext>>,
 	mut color: Query<&mut Text, With<Subtext>>,
 ) {
-	let window = windows.get_primary().unwrap();
+	let Ok(window) = primary_window.get_single() else {
+        return;
+
+    };
 
 	for mut style in subtext.iter_mut() {
 		style.position.left = Val::Px(ease_out_elastic(progress.time)*window.width()/2.0-window.width()/2.0)
@@ -165,52 +171,52 @@ fn update_subtext_text(
 	}
 }
 
-fn keys(
-	keyboard_input: Res<Input<KeyCode>>,
-	mut progress: ResMut<Progress>, 
-	mut exit: EventWriter<AppExit>,
-	mut windows: ResMut<Windows>,
-) {
-	let window = windows.get_primary_mut().unwrap();
+// fn keys(
+// 	keyboard_input: Res<Input<KeyCode>>,
+// 	mut progress: ResMut<Progress>, 
+// 	mut exit: EventWriter<AppExit>,
+// 	mut windows: ResMut<Windows>,
+// ) {
+// 	let window = windows.get_primary_mut().unwrap();
 
-	if env::consts::OS == "macos" {
-		if keyboard_input.pressed(KeyCode::LWin) && keyboard_input.just_pressed(KeyCode::W) {
-				exit.send(AppExit);
-				window.set_mode(WindowMode::Windowed);
-		}
-		if keyboard_input.pressed(KeyCode::LWin) 
-		&& keyboard_input.pressed(KeyCode::LControl) 
-		&& keyboard_input.just_pressed(KeyCode::F) {
-			println!("{:?}", window.mode());
-			if window.mode() == WindowMode::Windowed {
-				window.set_mode(WindowMode::BorderlessFullscreen);
-			} else if window.mode() == WindowMode::BorderlessFullscreen {
-				window.set_mode(WindowMode::Windowed);
-			}
-		}
+// 	if env::consts::OS == "macos" {
+// 		if keyboard_input.pressed(KeyCode::LWin) && keyboard_input.just_pressed(KeyCode::W) {
+// 				exit.send(AppExit);
+// 				window.set_mode(WindowMode::Windowed);
+// 		}
+// 		if keyboard_input.pressed(KeyCode::LWin) 
+// 		&& keyboard_input.pressed(KeyCode::LControl) 
+// 		&& keyboard_input.just_pressed(KeyCode::F) {
+// 			println!("{:?}", window.mode());
+// 			if window.mode() == WindowMode::Windowed {
+// 				window.set_mode(WindowMode::BorderlessFullscreen);
+// 			} else if window.mode() == WindowMode::BorderlessFullscreen {
+// 				window.set_mode(WindowMode::Windowed);
+// 			}
+// 		}
 
-		if RESTARTABLE {
-			if keyboard_input.pressed(KeyCode::LWin) && keyboard_input.just_pressed(KeyCode::R) {
-				progress.time = 0.0
-			}
-		}
-	}
-	if env::consts::OS == "windows" {
-		if keyboard_input.just_pressed(KeyCode::F11) {
-			if window.mode() == WindowMode::Windowed {
-				window.set_mode(WindowMode::BorderlessFullscreen);
-			} else if window.mode() == WindowMode::BorderlessFullscreen {
-				window.set_mode(WindowMode::Windowed);
-			}
-		}
+// 		if RESTARTABLE {
+// 			if keyboard_input.pressed(KeyCode::LWin) && keyboard_input.just_pressed(KeyCode::R) {
+// 				progress.time = 0.0
+// 			}
+// 		}
+// 	}
+// 	if env::consts::OS == "windows" {
+// 		if keyboard_input.just_pressed(KeyCode::F11) {
+// 			if window.mode() == WindowMode::Windowed {
+// 				window.set_mode(WindowMode::BorderlessFullscreen);
+// 			} else if window.mode() == WindowMode::BorderlessFullscreen {
+// 				window.set_mode(WindowMode::Windowed);
+// 			}
+// 		}
 
-		if RESTARTABLE {
-			if keyboard_input.pressed(KeyCode::LControl) && keyboard_input.just_pressed(KeyCode::R) {
-				progress.time = 0.0
-			}
-		}
-	}
-}
+// 		if RESTARTABLE {
+// 			if keyboard_input.pressed(KeyCode::LControl) && keyboard_input.just_pressed(KeyCode::R) {
+// 				progress.time = 0.0
+// 			}
+// 		}
+// 	}
+// }
 
 fn delete_when_finished(
 	progress: Res<Progress>, 
