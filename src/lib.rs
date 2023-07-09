@@ -19,8 +19,9 @@ impl Plugin for Intro {
 				.add_system(update_background)
 				.add_system(update_dot32_text)
 				.add_system(update_subtext_text)
-				.add_system(delete_when_finished);
-				// .add_system(keys)
+				.add_system(delete_when_finished)
+				.add_system(keys)
+				;
 				// .run();
 	}
 }
@@ -171,52 +172,60 @@ fn update_subtext_text(
 	}
 }
 
-// fn keys(
-// 	keyboard_input: Res<Input<KeyCode>>,
-// 	mut progress: ResMut<Progress>, 
-// 	mut exit: EventWriter<AppExit>,
-// 	mut windows: ResMut<Windows>,
-// ) {
-// 	let window = windows.get_primary_mut().unwrap();
+fn keys(
+	keyboard_input: Res<Input<KeyCode>>,
+	mut progress: ResMut<Progress>, 
+	mut exit: EventWriter<AppExit>,
+	mut primary_window: Query<&mut Window, With<PrimaryWindow>>, 
+) {
+	let Ok(mut window) = primary_window.get_single_mut() else {
+		return;
 
-// 	if env::consts::OS == "macos" {
-// 		if keyboard_input.pressed(KeyCode::LWin) && keyboard_input.just_pressed(KeyCode::W) {
-// 				exit.send(AppExit);
-// 				window.set_mode(WindowMode::Windowed);
-// 		}
-// 		if keyboard_input.pressed(KeyCode::LWin) 
-// 		&& keyboard_input.pressed(KeyCode::LControl) 
-// 		&& keyboard_input.just_pressed(KeyCode::F) {
-// 			println!("{:?}", window.mode());
-// 			if window.mode() == WindowMode::Windowed {
-// 				window.set_mode(WindowMode::BorderlessFullscreen);
-// 			} else if window.mode() == WindowMode::BorderlessFullscreen {
-// 				window.set_mode(WindowMode::Windowed);
-// 			}
-// 		}
+	};
 
-// 		if RESTARTABLE {
-// 			if keyboard_input.pressed(KeyCode::LWin) && keyboard_input.just_pressed(KeyCode::R) {
-// 				progress.time = 0.0
-// 			}
-// 		}
-// 	}
-// 	if env::consts::OS == "windows" {
-// 		if keyboard_input.just_pressed(KeyCode::F11) {
-// 			if window.mode() == WindowMode::Windowed {
-// 				window.set_mode(WindowMode::BorderlessFullscreen);
-// 			} else if window.mode() == WindowMode::BorderlessFullscreen {
-// 				window.set_mode(WindowMode::Windowed);
-// 			}
-// 		}
+	if env::consts::OS == "macos" {
+		if keyboard_input.pressed(KeyCode::LWin) && keyboard_input.just_pressed(KeyCode::W) {
+				exit.send(AppExit);
+				// window.set_mode(WindowMode::Windowed);
+				window.mode = WindowMode::Windowed;
+		}
+		if keyboard_input.pressed(KeyCode::LWin) 
+		&& keyboard_input.pressed(KeyCode::LControl) 
+		&& keyboard_input.just_pressed(KeyCode::F) {
+			println!("{:?}", window.mode);
+			if window.mode == WindowMode::Windowed {
+				// window.set_mode(WindowMode::BorderlessFullscreen);
+				window.mode = WindowMode::BorderlessFullscreen;
+			} else if window.mode == WindowMode::BorderlessFullscreen {
+				// window.set_mode(WindowMode::Windowed);
+				window.mode = WindowMode::Windowed;
+			}
+		}
 
-// 		if RESTARTABLE {
-// 			if keyboard_input.pressed(KeyCode::LControl) && keyboard_input.just_pressed(KeyCode::R) {
-// 				progress.time = 0.0
-// 			}
-// 		}
-// 	}
-// }
+		if RESTARTABLE {
+			if keyboard_input.pressed(KeyCode::LWin) && keyboard_input.just_pressed(KeyCode::R) {
+				progress.time = 0.0
+			}
+		}
+	}
+	if env::consts::OS == "windows" {
+		if keyboard_input.just_pressed(KeyCode::F11) {
+			if window.mode == WindowMode::Windowed {
+				// window.set_mode(WindowMode::BorderlessFullscreen);
+				window.mode = WindowMode::BorderlessFullscreen;
+			} else if window.mode == WindowMode::BorderlessFullscreen {
+				// window.set_mode(WindowMode::Windowed);
+				window.mode = WindowMode::Windowed;
+			}
+		}
+
+		if RESTARTABLE {
+			if keyboard_input.pressed(KeyCode::LControl) && keyboard_input.just_pressed(KeyCode::R) {
+				progress.time = 0.0
+			}
+		}
+	}
+}
 
 fn delete_when_finished(
 	progress: Res<Progress>, 
