@@ -1,13 +1,13 @@
 // TODO: delete_when_finished should run once, not every frame
-// TODO: Update functions should run on a fixed timestep
 
 use std::env;
 use bevy::prelude::*;
 use bevy::window::*;
 use bevy::app::AppExit;
 
-const RESTARTABLE: bool = false;
+const RESTARTABLE: bool = true;
 const SUBTEXT: &str = "Games";
+const FIXED_TIMESTEP: f32 = 1.0 / 60.0;
 pub const LENGTH: f32 = 1.0;
 pub const FADE: f32 = 0.2;
 
@@ -17,15 +17,18 @@ impl Plugin for Intro {
 	fn build(&self, app: &mut App) {
 		app.insert_resource(Progress { time: -0.2 })
 			.insert_resource(Completed { value: false })
+			.insert_resource(FixedTime::new_from_secs(FIXED_TIMESTEP))
 			.add_systems(Startup, setup)
 			.add_systems(Update, (
 				update_time, 
 				update_background, 
+				delete_when_finished, 
+				keys
+			))
+			.add_systems(FixedUpdate, (
 				update_dot32_text, 
 				update_subtext_text, 
-				delete_when_finished, 
-				keys)
-			);
+			));
 	}
 }
 
