@@ -15,17 +15,17 @@ pub struct Intro;
 
 impl Plugin for Intro {
 	fn build(&self, app: &mut App) {
-			app.insert_resource(Progress { time: -0.2 })
-				.insert_resource(Completed { value: false })
-				.add_systems(Startup, setup)
-				.add_systems(Update, (
-					update_time, 
-					update_background, 
-					update_dot32_text, 
-					update_subtext_text, 
-					delete_when_finished, 
-					keys)
-				);
+		app.insert_resource(Progress { time: -0.2 })
+			.insert_resource(Completed { value: false })
+			.add_systems(Startup, setup)
+			.add_systems(Update, (
+				update_time, 
+				update_background, 
+				update_dot32_text, 
+				update_subtext_text, 
+				delete_when_finished, 
+				keys)
+			);
 	}
 }
 

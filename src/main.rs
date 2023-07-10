@@ -23,6 +23,6 @@ fn main() {
 			}),
 			..default()
 		}))
-		.add_plugin(dot32_intro::Intro)
+		.add_plugins(dot32_intro::Intro)
 		.run();
 }
