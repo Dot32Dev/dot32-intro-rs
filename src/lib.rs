@@ -1,3 +1,6 @@
+// TODO: delete_when_finished should run once, not every frame
+// TODO: Update functions should run on a fixed timestep
+
 use std::env;
 use bevy::prelude::*;
 use bevy::window::*;
