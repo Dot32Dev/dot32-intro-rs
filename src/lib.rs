@@ -14,15 +14,15 @@ impl Plugin for Intro {
 	fn build(&self, app: &mut App) {
 			app.insert_resource(Progress { time: -0.2 })
 				.insert_resource(Completed { value: false })
-				.add_startup_system(setup)
-				.add_system(update_time)
-				.add_system(update_background)
-				.add_system(update_dot32_text)
-				.add_system(update_subtext_text)
-				.add_system(delete_when_finished)
-				.add_system(keys)
-				;
-				// .run();
+				.add_systems(Startup, setup)
+				.add_systems(Update, (
+					update_time, 
+					update_background, 
+					update_dot32_text, 
+					update_subtext_text, 
+					delete_when_finished, 
+					keys)
+				);
 	}
 }
 
@@ -57,7 +57,8 @@ fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 	});
 	commands.spawn(NodeBundle {
 		style: Style {
-			size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+			width: Val::Percent(100.0),
+			height: Val::Percent(100.0),
 			position_type: PositionType::Absolute,
 			justify_content: JustifyContent::Center,
 			flex_direction: FlexDirection::ColumnReverse,
@@ -84,10 +85,11 @@ fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 			// })
 			.with_style(Style {
 				align_self: AlignSelf::Center,
-				position: UiRect {
-					bottom: Val::Px(20.0),
-					..default()
-				},
+				// position: UiRect {
+				// 	bottom: Val::Px(20.0),
+				// 	..default()
+				// },
+				bottom: Val::Px(20.0),
 				..default()
 			})
 		).insert(Name::new("Subtext")).insert(Subtext);
@@ -107,10 +109,11 @@ fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 			// })
 			.with_style(Style {
 				align_self: AlignSelf::Center,
-				position: UiRect {
-					bottom: Val::Px(0.0),
-					..default()
-				},
+				// position: UiRect {
+				// 	bottom: Val::Px(0.0),
+				// 	..default()
+				// },
+				bottom: Val::Px(0.0),
 				..default()
 			})
 		).insert(Name::new("Dot32")).insert(Dot32);
@@ -144,7 +147,7 @@ fn update_dot32_text(
     };
 
 	for mut style in dot32.iter_mut() {
-		style.position.top = Val::Px(ease_out_elastic(progress.time)*window.height()/2.0-window.height()/2.0)
+		style.top = Val::Px(ease_out_elastic(progress.time)*window.height()/2.0-window.height()/2.0)
 	}
 
 	for mut value in color.iter_mut() {
@@ -164,7 +167,7 @@ fn update_subtext_text(
     };
 
 	for mut style in subtext.iter_mut() {
-		style.position.left = Val::Px(ease_out_elastic(progress.time)*window.width()/2.0-window.width()/2.0)
+		style.left = Val::Px(ease_out_elastic(progress.time)*window.width()/2.0-window.width()/2.0)
 	}
 
 	for mut value in color.iter_mut() {
@@ -184,13 +187,13 @@ fn keys(
 	};
 
 	if env::consts::OS == "macos" {
-		if keyboard_input.pressed(KeyCode::LWin) && keyboard_input.just_pressed(KeyCode::W) {
+		if keyboard_input.pressed(KeyCode::SuperLeft) && keyboard_input.just_pressed(KeyCode::W) {
 				exit.send(AppExit);
 				// window.set_mode(WindowMode::Windowed);
 				window.mode = WindowMode::Windowed;
 		}
-		if keyboard_input.pressed(KeyCode::LWin) 
-		&& keyboard_input.pressed(KeyCode::LControl) 
+		if keyboard_input.pressed(KeyCode::SuperLeft) 
+		&& keyboard_input.pressed(KeyCode::ControlLeft) 
 		&& keyboard_input.just_pressed(KeyCode::F) {
 			println!("{:?}", window.mode);
 			if window.mode == WindowMode::Windowed {
@@ -203,7 +206,7 @@ fn keys(
 		}
 
 		if RESTARTABLE {
-			if keyboard_input.pressed(KeyCode::LWin) && keyboard_input.just_pressed(KeyCode::R) {
+			if keyboard_input.pressed(KeyCode::SuperLeft) && keyboard_input.just_pressed(KeyCode::R) {
 				progress.time = 0.0
 			}
 		}
@@ -220,7 +223,7 @@ fn keys(
 		}
 
 		if RESTARTABLE {
-			if keyboard_input.pressed(KeyCode::LControl) && keyboard_input.just_pressed(KeyCode::R) {
+			if keyboard_input.pressed(KeyCode::ControlLeft) && keyboard_input.just_pressed(KeyCode::R) {
 				progress.time = 0.0
 			}
 		}
