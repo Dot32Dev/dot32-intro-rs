@@ -7,7 +7,7 @@ use bevy::app::AppExit;
 
 const RESTARTABLE: bool = true;
 const SUBTEXT: &str = "Games";
-const FIXED_TIMESTEP: f32 = 1.0 / 60.0;
+const FIXED_TIMESTEP: f64 = 1.0 / 60.0;
 pub const LENGTH: f32 = 1.0;
 pub const FADE: f32 = 0.2;
 
@@ -17,7 +17,7 @@ impl Plugin for Intro {
 	fn build(&self, app: &mut App) {
 		app.insert_resource(Progress { time: -0.2 })
 			.insert_resource(Completed { value: false })
-			.insert_resource(FixedTime::new_from_secs(FIXED_TIMESTEP))
+			.insert_resource(Time::<Fixed>::from_seconds(FIXED_TIMESTEP))
 			.add_systems(Startup, setup)
 			.add_systems(Update, (
 				update_time, 
