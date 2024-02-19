@@ -11,7 +11,7 @@ Press `ctrl`+`r` on windows or `cmd`+`r` on mac to replay the animation. (This i
 Installation of the intro is as simple as 
 ```toml
 [dependencies]
-dot32_intro = { git = "https://github.com/Dot32IsCool/dot32-intro-rs", rev = "ca092d5"}
+dot32_intro = { git = "https://github.com/Dot32IsCool/dot32-intro-rs", rev = "d5075f3"}
 ```
 Make sure to include the git rev of the version you're using, see version table below.
 
