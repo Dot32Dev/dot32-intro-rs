@@ -50,15 +50,15 @@ struct Background;
 
 fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 	// commands.spawn(Camera2dBundle::default());
-	commands.spawn(Camera2dBundle {
+	let camera = commands.spawn(Camera2dBundle {
 		camera: Camera {
 			// renders after / on top of the main camera
 			order: -1,
 			..default()
 		},
 		..default()
-	});
-	commands.spawn(NodeBundle {
+	}).id();
+	commands.spawn((NodeBundle {
 		style: Style {
 			width: Val::Percent(100.0),
 			height: Val::Percent(100.0),
@@ -69,7 +69,7 @@ fn setup(mut commands: Commands , asset_server: Res<AssetServer>) {
 		},
 		background_color: Color::rgba(0.17, 0.17, 0.17, 1.0).into(),
 		..default()
-	})
+	}, TargetCamera(camera)))
 	.insert(Background)
 	.insert(Name::new("Intro"))
 	.with_children(|parent| {
@@ -179,7 +179,7 @@ fn update_subtext_text(
 }
 
 fn keys(
-	keyboard_input: Res<Input<KeyCode>>,
+	keyboard_input: Res<ButtonInput<KeyCode>>,
 	mut progress: ResMut<Progress>, 
 	mut exit: EventWriter<AppExit>,
 	mut primary_window: Query<&mut Window, With<PrimaryWindow>>, 
@@ -190,14 +190,14 @@ fn keys(
 	};
 
 	if env::consts::OS == "macos" {
-		if keyboard_input.pressed(KeyCode::SuperLeft) && keyboard_input.just_pressed(KeyCode::W) {
+		if keyboard_input.pressed(KeyCode::SuperLeft) && keyboard_input.just_pressed(KeyCode::KeyW) {
 				exit.send(AppExit);
 				// window.set_mode(WindowMode::Windowed);
 				window.mode = WindowMode::Windowed;
 		}
 		if keyboard_input.pressed(KeyCode::SuperLeft) 
 		&& keyboard_input.pressed(KeyCode::ControlLeft) 
-		&& keyboard_input.just_pressed(KeyCode::F) {
+		&& keyboard_input.just_pressed(KeyCode::KeyF) {
 			println!("{:?}", window.mode);
 			if window.mode == WindowMode::Windowed {
 				// window.set_mode(WindowMode::BorderlessFullscreen);
@@ -209,7 +209,7 @@ fn keys(
 		}
 
 		if RESTARTABLE {
-			if keyboard_input.pressed(KeyCode::SuperLeft) && keyboard_input.just_pressed(KeyCode::R) {
+			if keyboard_input.pressed(KeyCode::SuperLeft) && keyboard_input.just_pressed(KeyCode::KeyR) {
 				progress.time = 0.0
 			}
 		}
@@ -226,7 +226,7 @@ fn keys(
 		}
 
 		if RESTARTABLE {
-			if keyboard_input.pressed(KeyCode::ControlLeft) && keyboard_input.just_pressed(KeyCode::R) {
+			if keyboard_input.pressed(KeyCode::ControlLeft) && keyboard_input.just_pressed(KeyCode::KeyR) {
 				progress.time = 0.0
 			}
 		}
