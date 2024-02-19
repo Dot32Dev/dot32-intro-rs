@@ -23,7 +23,8 @@ I've no idea why you might want to use my intro library but maybe this could be 
 
 |Bevy version|dot32_intro version|dot32_intro git rev 
 |---|---|---|
-|0.12|0.7|`ca092d5`
+|0.13|0.8|`d5075f3`
+|0.12|0.7.1|`f81c0a8`
 |0.11|0.6|`8bc8bd5`
 |0.10|0.5|`a704742`
 |0.9|0.4|`49de846`
